@@ -12,6 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools)
 
+set(CV_DIR "C:/opencv/build" CACHE STRING "Please update this path to point to the opencv cmakes path.(in cmake variables you can too)")
+
+set(OpenCV_DIR ${CV_DIR}) # download from: https://github.com/opencv/opencv/releases , we tested: tag/4.8.1
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+
 set(TS_FILES ShapeFromX_fa_IR.ts)
 
 set(PROJECT_SOURCES
@@ -73,3 +80,5 @@ if(QT_VERSION_MAJOR EQUAL 6)
   qt_import_qml_plugins(ShapeFromX)
   qt_finalize_executable(ShapeFromX)
 endif()
+
+target_link_libraries(ShapeFromX PUBLIC ${OpenCV_LIBS})
