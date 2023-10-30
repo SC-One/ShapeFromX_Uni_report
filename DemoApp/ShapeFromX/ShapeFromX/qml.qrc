@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>test.png</file>
+        <file>ShapeFromX.qml</file>
+        <file>Manners/MannerBase.qml</file>
     </qresource>
 </RCC>
