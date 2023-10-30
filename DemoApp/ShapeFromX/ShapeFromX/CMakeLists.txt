@@ -14,6 +14,11 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools)
 
 set(CV_DIR "C:/opencv/build" CACHE STRING "Please update this path to point to the opencv cmakes path.(in cmake variables you can too)")
 
+option(TEST_PRJ_BEFORE_START "just for testing that opencv linked and it's ok." OFF)
+
+if(${TEST_PRJ_BEFORE_START})
+  add_compile_definitions(TEST_OPENCV_BY_US)
+endif()
 set(OpenCV_DIR ${CV_DIR}) # download from: https://github.com/opencv/opencv/releases , we tested: tag/4.8.1
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -48,6 +53,7 @@ else()
 else()
   add_executable(ShapeFromX
     ${PROJECT_SOURCES}
+    Utilities.h Utilities.cpp
   )
 endif()
 
