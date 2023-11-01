@@ -54,6 +54,12 @@ else()
   add_executable(ShapeFromX
     ${PROJECT_SOURCES}
     Utilities.h Utilities.cpp
+    Manners/ShapingManners.h
+    Manners/ShapingManners.cpp
+    Manners/ShapeMannerHeaders.h
+    Manners/include/ShapeFromShading.h
+    Manners/src/ShapeFromShading.cpp
+    Manners/ShapeFromXBase.h Manners/ShapeFromXBase.cpp
   )
 endif()
 
@@ -88,3 +94,4 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 target_link_libraries(ShapeFromX PUBLIC ${OpenCV_LIBS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Manners/include)

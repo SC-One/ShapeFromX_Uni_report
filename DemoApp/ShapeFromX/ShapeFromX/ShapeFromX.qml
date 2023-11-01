@@ -12,6 +12,15 @@ Item {
         convertingWays.append(data)
         convertingWays.sync()
     }
+    function removeUI(title) {
+        for (var i = 0; i < convertingWays.count; ++i) {
+            if (title === convertingWays.get(i).title) {
+                convertingWays.remove(i)
+                return true
+            }
+        }
+        return false
+    }
     QtObject {
         id: prvObj
         ListModel {

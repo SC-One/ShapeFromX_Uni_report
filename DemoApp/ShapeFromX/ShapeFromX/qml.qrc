@@ -4,5 +4,6 @@
         <file>test.png</file>
         <file>ShapeFromX.qml</file>
         <file>Manners/MannerBase.qml</file>
+        <file>Manners/ShapeFromShading.qml</file>
     </qresource>
 </RCC>
