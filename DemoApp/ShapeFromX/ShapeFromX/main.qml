@@ -7,4 +7,11 @@ Window {
     height: 480
     visible: true
     title: qsTr("Shape From X")
+    ShapeFromX {
+        anchors.margins: 7
+        anchors.fill: parent
+        Component.onCompleted: {
+            addNewUI("Shape from Shading", "qrc:/Manners/ShapeFromShading.qml")
+        }
+    }
 }

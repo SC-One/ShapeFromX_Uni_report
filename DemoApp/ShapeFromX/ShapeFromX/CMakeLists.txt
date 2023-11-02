@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization)
 
 set(CV_DIR "C:/opencv/build" CACHE STRING "Please update this path to point to the opencv cmakes path.(in cmake variables you can too)")
 
@@ -19,6 +19,7 @@ option(TEST_PRJ_BEFORE_START "just for testing that opencv linked and it's ok." 
 if(${TEST_PRJ_BEFORE_START})
   add_compile_definitions(TEST_OPENCV_BY_US)
 endif()
+# if you need mingw prebuild use:   https://github.com/huihut/OpenCV-MinGW-Build
 set(OpenCV_DIR ${CV_DIR}) # download from: https://github.com/opencv/opencv/releases , we tested: tag/4.8.1
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -67,7 +68,11 @@ qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
 target_link_libraries(ShapeFromX
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Quick
+  Qt${QT_VERSION_MAJOR}::Concurrent
+  Qt${QT_VERSION_MAJOR}::DataVisualization
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

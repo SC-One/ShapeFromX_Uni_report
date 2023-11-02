@@ -11,8 +11,10 @@ class ShapeFromXBase : public QObject {
 public:
   explicit ShapeFromXBase(QObject *parent = nullptr);
 
-  QUrl currentImageURL() const;
-  void setCurrentImageURL(const QUrl &newCurrentImageURL);
+  Q_INVOKABLE QUrl currentImageURL() const;
+  Q_INVOKABLE void setCurrentImageURL(const QUrl &newCurrentImageURL);
+  Q_INVOKABLE void reset(const QUrl &newCurrentImageURL);
+  Q_INVOKABLE void reCalculate(const QUrl &newCurrentImageURL);
 
   /// default impl do nothing
   /// All derived should reimplement this; they can use threading or anything
@@ -21,7 +23,7 @@ public:
   virtual void calculateOutput();
 signals:
   void currentImageURLChanged();
-  void updatedOutput();
+  void outputCalculated();
 
 protected:
   QUrl _currentImageURL;

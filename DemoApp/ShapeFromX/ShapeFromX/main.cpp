@@ -5,6 +5,7 @@
 #include <QTranslator>
 
 #include "Utilities.h"
+#include <Manners/ShapingManners.h>
 #include <cmath>
 #include <opencv2/opencv.hpp>
 
@@ -15,7 +16,8 @@ int test() {
   using namespace std;
   // Load the shading image (grayscale)
   Mat shading = Utility::loadFromQrc(
-      ":/test.png", // test: https://www.pngall.com/face-png/download/99591
+      QUrl(":/test.png"), // test:
+                          // https://www.pngall.com/face-png/download/99591
       IMREAD_GRAYSCALE);
 
   if (shading.empty()) {
@@ -65,8 +67,13 @@ int main(int argc, char *argv[]) {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+
+  QCoreApplication::setOrganizationName("Header Coding");
+  QCoreApplication::setOrganizationDomain("HCoding.ir");
+
   QGuiApplication app(argc, argv);
 
+  Manners::registerMannersToQuickEngine();
   QTranslator translator;
   const QStringList uiLanguages = QLocale::system().uiLanguages();
   for (const QString &locale : uiLanguages) {

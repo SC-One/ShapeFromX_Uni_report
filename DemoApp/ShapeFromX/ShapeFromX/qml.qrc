@@ -5,5 +5,6 @@
         <file>ShapeFromX.qml</file>
         <file>Manners/MannerBase.qml</file>
         <file>Manners/ShapeFromShading.qml</file>
+        <file>FileChooser.qml</file>
     </qresource>
 </RCC>

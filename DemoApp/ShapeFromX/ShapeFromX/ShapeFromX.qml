@@ -10,7 +10,6 @@ Item {
             "source": qmlCompAddress
         }
         convertingWays.append(data)
-        convertingWays.sync()
     }
     function removeUI(title) {
         for (var i = 0; i < convertingWays.count; ++i) {
@@ -21,50 +20,74 @@ Item {
         }
         return false
     }
+    ListModel {
+        id: convertingWays
+    }
     QtObject {
         id: prvObj
-        ListModel {
-            id: convertingWays
-        }
     }
 
     ButtonGroup {
         id: radioGroup
         buttons: radioButtonsLayout.children
     }
-    PageIndicator {
-        id: indicator
-
-        count: view.count
-        currentIndex: view.currentIndex
-
-        anchors.bottom: view.bottom
-        anchors.horizontalCenter: view.horizontalCenter
-    }
     ColumnLayout {
         id: generalLayout
         anchors.fill: parent
+        FileChooser {
+            id: fileChooser
+            property int fixedWidth: view.item ? view.item.width : 350
+            Layout.maximumWidth: fixedWidth
+            Layout.minimumWidth: fixedWidth
+            Layout.minimumHeight: 70
+            onCurrentPathChanged: {
+                view.item.sourceImagePath = currentPath
+            }
+        }
+
         RowLayout {
             id: mainRow
-
-            SwipeView {
+            Loader {
                 id: view
-                currentIndex: 1
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                asynchronous: true
+                active: true
+                source: mainRptr.whichoneSelected
+                        !== undefined ? mainRptr.whichoneSelected : "qrc:/Manners/MannerBase.qml"
+                onStateChanged: {
+                    console.log(view.state)
+                }
             }
 
-            Column {
+            ColumnLayout {
                 id: radioButtonsLayout
                 spacing: 5
                 Layout.fillHeight: true
+                Item {
+                    Layout.fillHeight: true
+                }
+
                 Repeater {
+                    id: mainRptr
+                    property var whichoneSelected
+
                     model: convertingWays
                     delegate: RadioButton {
-                        text: title
+                        text: model.title
+                        property var sourceComp: model.source
                         ButtonGroup.group: radioGroup
-                        checked: true
+
+                        onCheckedChanged: {
+                            if (checked) {
+                                mainRptr.whichoneSelected = sourceComp
+                            }
+                        }
                     }
+                }
+
+                Item {
+                    Layout.fillHeight: true
                 }
             }
         }
