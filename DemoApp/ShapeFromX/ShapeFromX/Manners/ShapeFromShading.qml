@@ -177,6 +177,7 @@ MannerBase {
             CheckBox {
                 anchors.right: parent.right
                 checked: parent.checked
+                enabled: false
             }
             checked: true
         }
