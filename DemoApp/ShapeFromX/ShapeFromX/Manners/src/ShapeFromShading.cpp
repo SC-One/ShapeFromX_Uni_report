@@ -10,6 +10,9 @@
 
 using namespace cv;
 using namespace std;
+static const char *NORMAL_POSTFIX = "_normal";
+static const char *REVERSE_POSTFIX = "_reverse";
+static const char *DEFAULT_IMAGE_EXTENSION = ".png";
 
 static void saveAsRGB32GrayScaleInverse(cv::Mat const &normalZ,
                                         QString const &fileAddress) {
@@ -19,7 +22,10 @@ static void saveAsRGB32GrayScaleInverse(cv::Mat const &normalZ,
     for (int x = 0; x < normalZ.cols; x++) {
       float value = normalZ.at<float>(y, x);
       int grayValue = static_cast<int>(value * 255);
-
+      if (2 > grayValue) {
+        normalZImage.setPixel(x, y, 255);
+        continue;
+      }
       // Invert the grayscale value
       int invertedGrayValue = 255 - grayValue;
 
@@ -42,11 +48,11 @@ static void saveAsRGB32GrayScale(cv::Mat const &normalZ,
   for (int y = 0; y < normalZ.rows; y++) {
     for (int x = 0; x < normalZ.cols; x++) {
       float value = normalZ.at<float>(y, x);
-      if (value == 1) {
+      int grayValue = static_cast<int>(value * 255);
+      if (254 < grayValue) {
         normalZImage.setPixel(x, y, 0);
         continue;
       }
-      int grayValue = static_cast<int>(value * 255);
       QRgb pixel = qRgb(grayValue, grayValue, grayValue);
       normalZImage.setPixel(x, y, pixel);
     }
@@ -58,7 +64,7 @@ static void saveAsRGB32GrayScale(cv::Mat const &normalZ,
 }
 
 ShapeFromShading::ShapeFromShading(QObject *parent) : ShapeFromXBase(parent) {
-  _outputFileName = QUuid::createUuid().toString() + ".png";
+  _outputFileName = QUuid::createUuid().toString();
 }
 
 void ShapeFromShading::calculateOutput() {
@@ -88,9 +94,26 @@ void ShapeFromShading::calculateOutput() {
         1.0f + gradXArray[i] * gradXArray[i] + gradYArray[i] * gradYArray[i];
     normalZArray[i] = 1.0f / std::sqrt(norm);
   }
-  saveAsRGB32GrayScale(normalZ, outputFileName());
+  saveAsRGB32GrayScale(normalZ, fullOutNormalFileName());
+  saveAsRGB32GrayScaleInverse(normalZ, fullOutInverseFileName());
   //  imshow("Surface Normals", normalZ); // to debug
   emit outputCalculated();
 }
 
 QString ShapeFromShading::outputFileName() const { return _outputFileName; }
+
+QString ShapeFromShading::fullOutNormalFileName() const {
+  return outputFileName() + normalPostFix() + defaultImageExtension();
+}
+
+QString ShapeFromShading::fullOutInverseFileName() const {
+  return outputFileName() + reversePostFix() + defaultImageExtension();
+}
+
+QString ShapeFromShading::normalPostFix() { return NORMAL_POSTFIX; }
+
+QString ShapeFromShading::reversePostFix() { return REVERSE_POSTFIX; }
+
+QString ShapeFromShading::defaultImageExtension() {
+  return DEFAULT_IMAGE_EXTENSION;
+}

@@ -12,6 +12,12 @@ public:
   virtual void calculateOutput() override;
 
   Q_INVOKABLE QString outputFileName() const;
+  Q_INVOKABLE QString fullOutNormalFileName() const;
+  Q_INVOKABLE QString fullOutInverseFileName() const;
+
+  Q_INVOKABLE static QString normalPostFix();
+  Q_INVOKABLE static QString reversePostFix();
+  Q_INVOKABLE static QString defaultImageExtension();
 
 private:
   // TODO: save output
