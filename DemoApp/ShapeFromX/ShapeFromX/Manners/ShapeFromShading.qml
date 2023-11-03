@@ -16,11 +16,11 @@ MannerBase {
         id: myAlgo
         currentImageURL: rootItem.sourceImagePath ? rootItem.sourceImagePath : ""
         onOutputCalculated: {
-            proxyModel.heightMapFile = ""
-            proxyModel.heightMapFile = myAlgo.fullOutNormalFileName()
+            heightSeries.pModel.heightMapFile = ""
+            heightSeries.pModel.heightMapFile = myAlgo.fullOutNormalFileName()
 
-            reverseProxyModel.heightMapFile = ""
-            reverseProxyModel.heightMapFile = myAlgo.fullOutInverseFileName()
+            reverseHeightSeries.pModel.heightMapFile = ""
+            reverseHeightSeries.pModel.heightMapFile = myAlgo.fullOutInverseFileName()
         }
     }
     Item {
@@ -28,6 +28,7 @@ MannerBase {
 
         ColorGradient {
             id: surfaceGradient
+
             ColorGradientStop {
                 position: 0.0
                 color: "darkslategray"
@@ -56,6 +57,7 @@ MannerBase {
             id: surfacePlot
             Layout.fillHeight: true
             Layout.fillWidth: true
+            flipHorizontalGrid: flipHorizontal.checked
 
             theme: Theme3D {
                 type: Theme3D.ThemeQt
@@ -82,24 +84,24 @@ MannerBase {
             axisX.title: "Image - X"
             axisZ.title: "Image - Y"
 
-            Surface3DSeries {
+            DefaultSurfaceSeriesShading {
                 id: heightSeries
-                flatShadingEnabled: flatBtn.checked
-                drawMode: Surface3DSeries.DrawSurface
-                visible: normalBtn.checked
-                HeightMapSurfaceDataProxy {
-                    id: proxyModel
-                }
+                targetVisibleBtn: normalBtn
+
+                targetFlatBtn: flatBtn
+                targetGridBtn: gridBtn
+                targetImageTextureBtn: textureLoading
+                imagePath: rootItem.sourceImagePath
             }
 
-            Surface3DSeries {
+            DefaultSurfaceSeriesShading {
                 id: reverseHeightSeries
-                flatShadingEnabled: flatBtn.checked
-                drawMode: Surface3DSeries.DrawSurface
-                visible: reverseBtn.checked
-                HeightMapSurfaceDataProxy {
-                    id: reverseProxyModel
-                }
+                targetVisibleBtn: reverseBtn
+
+                targetFlatBtn: flatBtn
+                targetGridBtn: gridBtn
+                targetImageTextureBtn: textureLoading
+                imagePath: rootItem.sourceImagePath
             }
         }
     }
@@ -180,6 +182,47 @@ MannerBase {
                 enabled: false
             }
             checked: true
+        }
+        Button {
+            id: gridBtn
+            text: qsTr("Grid surface")
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            checkable: true
+            CheckBox {
+                anchors.right: parent.right
+                checked: parent.checked
+                enabled: false
+            }
+            checked: false
+        }
+
+        Button {
+            id: flipHorizontal
+            text: qsTr("Flip horizontal")
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            checkable: true
+            CheckBox {
+                anchors.right: parent.right
+                checked: parent.checked
+                enabled: false
+            }
+            checked: false
+        }
+
+        Button {
+            id: textureLoading
+            text: qsTr("Load image texture")
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            checkable: true
+            CheckBox {
+                anchors.right: parent.right
+                checked: parent.checked
+                enabled: false
+            }
+            checked: false
         }
         Item {
             Layout.fillWidth: true

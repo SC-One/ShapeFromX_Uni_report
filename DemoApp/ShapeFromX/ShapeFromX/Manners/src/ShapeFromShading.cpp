@@ -1,11 +1,12 @@
 #include <QFile>
 #include <QUuid>
 #include <ShapeFromShading.h>
+#include <Utilities.h>
 #include <cmath>
 #include <opencv2/opencv.hpp>
 
+#include <QDebug>
 #include <QImage>
-#include <QtConcurrent>
 #include <Utilities.h>
 
 using namespace cv;

@@ -37,16 +37,47 @@ Item {
         FileChooser {
             id: fileChooser
             property int fixedWidth: view.item ? view.item.width : 350
-            Layout.maximumWidth: fixedWidth
-            Layout.minimumWidth: fixedWidth
+            Layout.fillWidth: true
             Layout.minimumHeight: 70
-            onCurrentPathChanged: {
+            function updateSourcePathInLoader() {
                 view.item.sourceImagePath = currentPath
             }
+            onCurrentPathChanged: updateSourcePathInLoader()
         }
 
         RowLayout {
             id: mainRow
+            Rectangle {
+                Layout.fillHeight: true
+                color: "#cfeaff"
+                width: 150
+                ColumnLayout {
+                    id: radioButtonsLayout
+                    anchors.fill: parent
+                    spacing: 5
+                    Repeater {
+                        id: mainRptr
+                        property var whichoneSelected
+
+                        model: convertingWays
+                        delegate: RadioButton {
+                            text: model.title
+                            property var sourceComp: model.source
+                            ButtonGroup.group: radioGroup
+
+                            onCheckedChanged: {
+                                if (checked) {
+                                    mainRptr.whichoneSelected = sourceComp
+                                }
+                            }
+                        }
+                    }
+
+                    Item {
+                        Layout.fillHeight: true
+                    }
+                }
+            }
             Loader {
                 id: view
                 Layout.fillWidth: true
@@ -55,39 +86,12 @@ Item {
                 active: true
                 source: mainRptr.whichoneSelected
                         !== undefined ? mainRptr.whichoneSelected : "qrc:/Manners/MannerBase.qml"
-                onStateChanged: {
-                    console.log(view.state)
-                }
-            }
-
-            ColumnLayout {
-                id: radioButtonsLayout
-                spacing: 5
-                Layout.fillHeight: true
-                Item {
-                    Layout.fillHeight: true
-                }
-
-                Repeater {
-                    id: mainRptr
-                    property var whichoneSelected
-
-                    model: convertingWays
-                    delegate: RadioButton {
-                        text: model.title
-                        property var sourceComp: model.source
-                        ButtonGroup.group: radioGroup
-
-                        onCheckedChanged: {
-                            if (checked) {
-                                mainRptr.whichoneSelected = sourceComp
-                            }
-                        }
+                onStatusChanged: {
+                    if (Loader.Error === view.status)
+                        console.log("Loader.Error on loading Shape from x plugin")
+                    if (Loader.Ready === view.status) {
+                        fileChooser.updateSourcePathInLoader()
                     }
-                }
-
-                Item {
-                    Layout.fillHeight: true
                 }
             }
         }
