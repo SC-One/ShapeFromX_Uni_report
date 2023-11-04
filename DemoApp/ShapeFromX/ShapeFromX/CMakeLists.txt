@@ -61,6 +61,8 @@ else()
     Manners/include/ShapeFromShading.h
     Manners/src/ShapeFromShading.cpp
     Manners/ShapeFromXBase.h Manners/ShapeFromXBase.cpp
+    Manners/include/ShapeFromTexture.h Manners/src/ShapeFromTexture.cpp
+    Manners/ShadingDataProxy.h Manners/ShadingDataProxy.cpp
   )
 endif()
 

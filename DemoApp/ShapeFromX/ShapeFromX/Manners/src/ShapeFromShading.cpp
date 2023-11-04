@@ -64,8 +64,35 @@ static void saveAsRGB32GrayScale(cv::Mat const &normalZ,
   }
 }
 
-ShapeFromShading::ShapeFromShading(QObject *parent) : ShapeFromXBase(parent) {
+static QVector<QPair<QPoint, int>> rerangeNormalz(cv::Mat const &normalZ) {
+  //  QVector<QVector<int>> myData =
+  //      QVector<QVector<int>>{normalZ.rows, QVector<int>(normalZ.cols, -1)};
+
+  QVector<QPair<QPoint, int>> pureData;
+  QFile f("tmpFile.log"); // QUuid::createUuid().toString()+ ".txLog"
+  if (!f.open(QFile::OpenModeFlag::WriteOnly))
+    return {};
+
+  for (int y = 0; y < normalZ.rows; y++) {
+    for (int x = 0; x < normalZ.cols; x++) {
+      float value = normalZ.at<float>(y, x);
+      int grayValue = static_cast<int>(value * 255);
+      if (grayValue == 0 || grayValue == 255) {
+        // if not valid for transparent or complete dark:
+        continue;
+      }
+      grayValue = std::max(grayValue, 230);
+      pureData.push_back({{y, x}, grayValue});
+      f.write(QString("%1,%2 : %3 \n").arg(x).arg(y).arg(grayValue).toLatin1());
+    }
+  }
+  return pureData;
+}
+
+ShapeFromShading::ShapeFromShading(QObject *parent)
+    : ShapeFromXBase(parent), _myProxyData(new ShadingDataProxy(this)) {
   _outputFileName = QUuid::createUuid().toString();
+  emit myProxyDataChanged();
 }
 
 void ShapeFromShading::calculateOutput() {
@@ -97,6 +124,13 @@ void ShapeFromShading::calculateOutput() {
   }
   saveAsRGB32GrayScale(normalZ, fullOutNormalFileName());
   saveAsRGB32GrayScaleInverse(normalZ, fullOutInverseFileName());
+  _myProxyData->setMyData(rerangeNormalz(normalZ));
+  //  _myProxyData->setMyData({{{3, 2}, 10},
+  //                           {{3, 4}, 11},
+  //                           {{4, 6}, 400},
+  //                           {{5, 9}, 20},
+  //                           {{2, 10}, 15},
+  //                           {{4, 8}, 16}});
   //  imshow("Surface Normals", normalZ); // to debug
   emit outputCalculated();
 }
@@ -117,4 +151,8 @@ QString ShapeFromShading::reversePostFix() { return REVERSE_POSTFIX; }
 
 QString ShapeFromShading::defaultImageExtension() {
   return DEFAULT_IMAGE_EXTENSION;
+}
+
+QAbstractListModel *ShapeFromShading::myProxyData() const {
+  return _myProxyData;
 }

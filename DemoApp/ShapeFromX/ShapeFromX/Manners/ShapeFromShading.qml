@@ -103,6 +103,32 @@ MannerBase {
                 targetImageTextureBtn: textureLoading
                 imagePath: rootItem.sourceImagePath
             }
+
+            Surface3DSeries {
+                visible: proxyDataBtn.checked
+
+                property var targetFlatBtn: flatBtn
+                property var targetGridBtn: gridBtn
+                property var targetImageTextureBtn: textureLoading
+                ItemModelSurfaceDataProxy {
+                    itemModel: myAlgo.myProxyData
+                    rowRole: "pointRoleX"
+                    columnRole: "pointRoleY"
+                    yPosRole: "valueRole"
+                }
+                flatShadingEnabled: targetFlatBtn.checked
+                drawMode: targetGridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
+
+                function takingAbsolutePath(stringPathFileSchema) {
+                    var qurl = Qt.resolvedUrl(stringPathFileSchema)
+                    return qurl.toLocalFile()
+                }
+
+                property var defaultTexture: rootItem.sourceImagePath ? rootItem.sourceImagePath.toString(
+                                                                            ).substring(
+                                                                            8) : ""
+                textureFile: targetImageTextureBtn.checked ? defaultTexture : ""
+            }
         }
     }
     RowLayout {
@@ -147,6 +173,32 @@ MannerBase {
             Button {
                 id: reverseBtn
                 text: qsTr("Reverse")
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                onCheckedChanged: {
+                    font.bold = checked
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    opacity: enabled ? 1.0 : 0.3
+                    color: "black"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                checkable: true
+                background: Rectangle {
+                    radius: 5
+                    border.color: parent.checked ? "green" : "transparent"
+                    border.width: 4
+                    color: parent.hovered ? "gray" : "darkGray"
+                }
+            }
+
+            Button {
+                id: proxyDataBtn
+                text: qsTr("ProxyData")
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 onCheckedChanged: {
