@@ -7,18 +7,13 @@ Surface3DSeries {
     property var targetGridBtn
     property var targetImageTextureBtn
     property var imagePath
-    property alias pModel : reverseProxyModel
+    property alias pModel: reverseProxyModel
 
     visible: targetVisibleBtn.checked
     flatShadingEnabled: targetFlatBtn.checked
     drawMode: targetGridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
     HeightMapSurfaceDataProxy {
         id: reverseProxyModel
-    }
-
-    function takingAbsolutePath(stringPathFileSchema) {
-        var qurl = Qt.resolvedUrl(stringPathFileSchema)
-        return qurl.toLocalFile()
     }
 
     property var defaultTexture: imagePath ? imagePath.toString(
