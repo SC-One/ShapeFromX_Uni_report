@@ -7,5 +7,7 @@
         <file>Manners/ShapeFromShading.qml</file>
         <file>FileChooser.qml</file>
         <file>Manners/DefaultSurfaceSeriesShading.qml</file>
+        <file>DefaultOptionBtn.qml</file>
+        <file>DefaultCheckableBtn.qml</file>
     </qresource>
 </RCC>

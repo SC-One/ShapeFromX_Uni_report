@@ -21,6 +21,12 @@ MannerBase {
 
             reverseHeightSeries.pModel.heightMapFile = ""
             reverseHeightSeries.pModel.heightMapFile = myAlgo.fullOutInverseFileName()
+
+            v2ProxyData.pModel.heightMapFile = ""
+            v2ProxyData.pModel.heightMapFile = myAlgo.fullOutV2FileName()
+
+            v3ProxyData.pModel.heightMapFile = ""
+            v3ProxyData.pModel.heightMapFile = myAlgo.fullOutV3FileName()
         }
     }
     Item {
@@ -66,7 +72,7 @@ MannerBase {
                 colorStyle: Theme3D.ColorStyleRangeGradient
                 baseGradients: [surfaceGradient]
             }
-            shadowQuality: AbstractGraph3D.ShadowQualityMedium
+            shadowQuality: shadowOption.checked ? AbstractGraph3D.ShadowQualityMedium : AbstractGraph3D.ShadowQualityNone
             selectionMode: AbstractGraph3D.SelectionSlice | AbstractGraph3D.SelectionItemAndRow
             scene.activeCamera.cameraPreset: Camera3D.CameraPresetIsometricLeft
             axisY.min: 0
@@ -103,6 +109,24 @@ MannerBase {
                 targetImageTextureBtn: textureLoading
                 imagePath: rootItem.sourceImagePath
             }
+            DefaultSurfaceSeriesShading {
+                id: v2ProxyData
+                targetVisibleBtn: v2ProxyDataBtn
+
+                targetFlatBtn: flatBtn
+                targetGridBtn: gridBtn
+                targetImageTextureBtn: textureLoading
+                imagePath: rootItem.sourceImagePath
+            }
+            DefaultSurfaceSeriesShading {
+                id: v3ProxyData
+                targetVisibleBtn: v3ProxyDataBtn
+
+                targetFlatBtn: flatBtn
+                targetGridBtn: gridBtn
+                targetImageTextureBtn: textureLoading
+                imagePath: rootItem.sourceImagePath
+            }
         }
     }
     RowLayout {
@@ -117,112 +141,62 @@ MannerBase {
             id: gp1
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Button {
+            ParentDir.DefaultOptionBtn {
                 id: normalBtn
                 text: qsTr("Normal")
                 checkable: true
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                checked: true
-                onCheckedChanged: {
-                    font.bold = checked
-                }
-
-                contentItem: Text {
-                    text: parent.text
-                    font: parent.font
-                    opacity: enabled ? 1.0 : 0.3
-                    color: "black"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                }
-                background: Rectangle {
-                    radius: 7
-                    border.color: parent.checked ? "green" : "transparent"
-                    border.width: 4
-                    color: parent.hovered ? "gray" : "darkGray"
-                }
             }
-            Button {
+            ParentDir.DefaultOptionBtn {
                 id: reverseBtn
                 text: qsTr("Reverse")
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                onCheckedChanged: {
-                    font.bold = checked
-                }
-                contentItem: Text {
-                    text: parent.text
-                    font: parent.font
-                    opacity: enabled ? 1.0 : 0.3
-                    color: "black"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                }
-                checkable: true
-                background: Rectangle {
-                    radius: 5
-                    border.color: parent.checked ? "green" : "transparent"
-                    border.width: 4
-                    color: parent.hovered ? "gray" : "darkGray"
-                }
+            }
+            ParentDir.DefaultOptionBtn {
+                id: v2ProxyDataBtn
+                text: qsTr("V2Proxy")
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+            }
+            ParentDir.DefaultOptionBtn {
+                id: v3ProxyDataBtn
+                text: qsTr("V3Proxy")
+                Layout.fillHeight: true
+                Layout.fillWidth: true
             }
         }
-        Button {
+        ParentDir.DefaultCheckableBtn {
             id: flatBtn
             text: qsTr("Flat surface")
             Layout.fillHeight: true
             Layout.fillWidth: true
-            checkable: true
-            CheckBox {
-                anchors.right: parent.right
-                checked: parent.checked
-                enabled: false
-            }
             checked: true
         }
-        Button {
+        ParentDir.DefaultCheckableBtn {
             id: gridBtn
             text: qsTr("Grid surface")
             Layout.fillHeight: true
             Layout.fillWidth: true
-            checkable: true
-            CheckBox {
-                anchors.right: parent.right
-                checked: parent.checked
-                enabled: false
-            }
-            checked: false
         }
-
-        Button {
+        ParentDir.DefaultCheckableBtn {
             id: flipHorizontal
             text: qsTr("Flip horizontal")
             Layout.fillHeight: true
             Layout.fillWidth: true
-            checkable: true
-            CheckBox {
-                anchors.right: parent.right
-                checked: parent.checked
-                enabled: false
-            }
-            checked: false
         }
-
-        Button {
+        ParentDir.DefaultCheckableBtn {
             id: textureLoading
             text: qsTr("Load image texture")
             Layout.fillHeight: true
             Layout.fillWidth: true
-            checkable: true
-            CheckBox {
-                anchors.right: parent.right
-                checked: parent.checked
-                enabled: false
-            }
-            checked: false
+        }
+        ParentDir.DefaultCheckableBtn {
+            id: shadowOption
+            text: qsTr("Shadows")
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
         Item {
             Layout.fillWidth: true
