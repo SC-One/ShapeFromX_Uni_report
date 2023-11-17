@@ -61,6 +61,8 @@ else()
     Manners/include/ShapeFromShading.h
     Manners/src/ShapeFromShading.cpp
     Manners/ShapeFromXBase.h Manners/ShapeFromXBase.cpp
+#    Manners/include/ShapeFromStereo.h Manners/src/ShapeFromStereo.cpp
+#    Manners/include/PointCloudStereo.h Manners/src/PointCloudStereo.cpp
   )
 endif()
 
@@ -98,5 +100,10 @@ if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(ShapeFromX)
 endif()
 
+add_executable(Mono_CalibrationCV calibration.cpp)
+
+target_link_libraries(Mono_CalibrationCV PUBLIC
+  ${OpenCV_LIBS}
+)
 target_link_libraries(ShapeFromX PUBLIC ${OpenCV_LIBS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Manners/include)
