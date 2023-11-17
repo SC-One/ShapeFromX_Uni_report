@@ -9,5 +9,6 @@
         <file>Manners/DefaultSurfaceSeriesShading.qml</file>
         <file>DefaultOptionBtn.qml</file>
         <file>DefaultCheckableBtn.qml</file>
+        <file>Manners/ShapeFromMCNN.qml</file>
     </qresource>
 </RCC>

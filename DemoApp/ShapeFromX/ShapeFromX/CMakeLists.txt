@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization WebSockets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick LinguistTools Concurrent DataVisualization WebSockets)
 
 set(CV_DIR "C:/opencv/build" CACHE STRING "Please update this path to point to the opencv cmakes path.(in cmake variables you can too)")
 
@@ -61,6 +61,7 @@ else()
     Manners/include/ShapeFromShading.h
     Manners/src/ShapeFromShading.cpp
     Manners/ShapeFromXBase.h Manners/ShapeFromXBase.cpp
+    Manners/include/ShapeFromMonoCularNN.h Manners/src/ShapeFromMonoCularNN.cpp
 #    Manners/include/ShapeFromStereo.h Manners/src/ShapeFromStereo.cpp
 #    Manners/include/PointCloudStereo.h Manners/src/PointCloudStereo.cpp
   )
@@ -74,6 +75,7 @@ target_link_libraries(ShapeFromX
   Qt${QT_VERSION_MAJOR}::Quick
   Qt${QT_VERSION_MAJOR}::Concurrent
   Qt${QT_VERSION_MAJOR}::DataVisualization
+  Qt${QT_VERSION_MAJOR}::WebSockets
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

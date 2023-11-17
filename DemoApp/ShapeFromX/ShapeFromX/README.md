@@ -10,6 +10,8 @@ in this directory we maintain demo code for some options and explaintion , to sh
 - python 
   - cv2
   - mediapipe
+  - asyncio
+  - websockets
 - opencv for c++
 
 ### Hardware

@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import QtQuick 2.14
 import ir.HCoding.SocietyCleaner 1.0 as Manners
 import QtDataVisualization 1.14
 import QtQuick.Layouts 1.14

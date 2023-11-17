@@ -3,6 +3,7 @@ import time
 import asyncio
 import websockets
 import mediapipe as mp
+import json
 
 # Define mediapipe face detection model
 face_detection_model = mp.solutions.face_detection.FaceDetection()
@@ -34,19 +35,18 @@ async def consumer(websocket, path):
                 depth_map = cv2.resize(depth_map, (width, height))
                 depth_map = cv2.normalize(depth_map, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
-                # Encode depth_map as JPG bytes for transmission
-                _, depth_map_encoded = cv2.imencode('.jpg', depth_map * 255)
+                # Prepare depth_map as a 2D array (vector of vectors)
+                depth_map_2d = depth_map.tolist()
 
-                # Send depth_map to connected clients
-                await websocket.send(depth_map_encoded.tobytes())
+                # Send depth_map as a JSON object to connected clients
+                await websocket.send(json.dumps(depth_map_2d))
 
                 # Simulate frame rate for demonstration purposes
-                await asyncio.sleep(0.1)  # Adjust the sleep time based on your actual frame rate
-
+                await asyncio.sleep(0.1)  # Adjust the sleep time based on your actual frame rate # max: 10 fps
     cap.release()
 
 # Start WebSocket server
-start_server = websockets.serve(consumer, "localhost", 8765)  # Change localhost and port if needed
+start_server = websockets.serve(consumer, "localhost", 50777)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
