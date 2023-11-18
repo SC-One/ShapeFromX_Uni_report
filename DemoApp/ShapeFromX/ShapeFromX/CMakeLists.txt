@@ -62,6 +62,7 @@ else()
     Manners/src/ShapeFromShading.cpp
     Manners/ShapeFromXBase.h Manners/ShapeFromXBase.cpp
     Manners/include/ShapeFromMonoCularNN.h Manners/src/ShapeFromMonoCularNN.cpp
+    Manners/include/ChessCalibrator.h Manners/src/ChessCalibrator.cpp
 #    Manners/include/ShapeFromStereo.h Manners/src/ShapeFromStereo.cpp
 #    Manners/include/PointCloudStereo.h Manners/src/PointCloudStereo.cpp
   )

@@ -10,5 +10,7 @@
         <file>DefaultOptionBtn.qml</file>
         <file>DefaultCheckableBtn.qml</file>
         <file>Manners/ShapeFromMCNN.qml</file>
+        <file>Manners/CalibrationQomponent.qml</file>
+        <file>Manners/FullImage.qml</file>
     </qresource>
 </RCC>

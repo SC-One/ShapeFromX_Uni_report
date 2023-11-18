@@ -11,6 +11,8 @@ Window {
         anchors.margins: 7
         anchors.fill: parent
         Component.onCompleted: {
+            addNewUI("Camera Calibration",
+                     "qrc:/Manners/CalibrationQomponent.qml")
             addNewUI("Shape from Shading", "qrc:/Manners/ShapeFromShading.qml")
             addNewUI("Monocular NN", "qrc:/Manners/ShapeFromMCNN.qml")
         }

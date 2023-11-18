@@ -16,5 +16,7 @@ namespace Manners {
 void registerMannersToQuickEngine() {
   ADD_THE_MANNER(ShapeFromShading);
   ADD_THE_MANNER(ShapeFromMonoCularNN);
+  ADD_THE_MANNER(ChessCalibrator);
+  qRegisterMetaType<CalibrationResult>("CalibrationResult");
 }
 } // namespace Manners
