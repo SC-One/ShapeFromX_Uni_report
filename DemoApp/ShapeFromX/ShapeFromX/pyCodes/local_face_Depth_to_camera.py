@@ -9,8 +9,8 @@ face_detection_model = mp.solutions.face_detection.FaceDetection()
 mono_model = cv2.dnn.readNet("model-small.onnx") # download: https://github.com/isl-org/MiDaS/releases/tag/v2_1
 
 # OPTIONAL - if you have CUDA
-#mono_model.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-#mono_model.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+mono_model.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+mono_model.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 
 def depth_to_distance(depth) -> float:
     """convert depth map to a real-world distance
@@ -65,12 +65,13 @@ while True:
         # change colors to display it in OpenCV
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-        # get the depth of the point of interest
-        depth = depth_map[int(interest_point[0]), int(interest_point[1])]
+        if len(interest_point) > 0: 
+            # get the depth of the point of interest
+            depth = depth_map[int(interest_point[0]), int(interest_point[1])]
 
-        depth_distance = depth_to_distance(depth)
-        cv2.putText(frame,f"Depth to face: {str(round(depth_distance,2)*100)} cm",(15,100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,100,255), 4)
-        
+            depth_distance = depth_to_distance(depth)
+            cv2.putText(frame,f"Depth to face: {str(round(depth_distance,2)*100)} cm",(15,100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,100,255), 4)
+            
         # calculate fps 
         fps = 1 / (time.time() - start_time)
         cv2.putText(frame,f"FPS is {int(fps)}",(15,65), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 4)
