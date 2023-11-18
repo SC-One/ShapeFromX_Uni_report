@@ -11,9 +11,10 @@ MannerBase {
 
     Manners.ShapeFromMonoCularNN {
         id: myAlgo
-        mySurfaceSeries: mySeri
+
+        //        mySurfaceSeries: mySeri
         onOutputCalculated: {
-            var arr = myAlgo.calculatedDepthMap()
+            var arr = myAlgo.calculatedDepthMap
             //todo: fill model by new 2d map data
             dataModel.clear()
             for (var i = 0; i < arr.length; ++i) {
@@ -89,19 +90,19 @@ MannerBase {
 
             Surface3DSeries {
                 id: mySeri
-                property var targetFlatBtn: flatBtn
-                property var targetGridBtn: gridBtn
-
-                flatShadingEnabled: targetFlatBtn.checked
-                drawMode: targetGridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
+                meshSmooth: true
+                flatShadingEnabled: flatBtn.checked
+                drawMode: gridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
                 ItemModelSurfaceDataProxy {
                     id: dataModelProxy
+                    itemModel: dataModel
                     rowRole: "y"
                     columnRole: "x"
                     yPosRole: "depth"
                 }
                 Component.onCompleted: {
-                    myAlgo.setSeries(mySeri)
+
+                    //                    myAlgo.setSeries(mySeri)
                 }
             }
         }

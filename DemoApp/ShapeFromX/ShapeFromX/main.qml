@@ -12,6 +12,7 @@ Window {
         anchors.fill: parent
         Component.onCompleted: {
             addNewUI("Shape from Shading", "qrc:/Manners/ShapeFromShading.qml")
+            addNewUI("Monocular NN", "qrc:/Manners/ShapeFromMCNN.qml")
         }
     }
 }

@@ -9,6 +9,7 @@ Surface3DSeries {
     property var imagePath
     property alias pModel: reverseProxyModel
 
+//    meshSmooth: targetFlatBtn.checked
     visible: targetVisibleBtn.checked
     flatShadingEnabled: targetFlatBtn.checked
     drawMode: targetGridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
