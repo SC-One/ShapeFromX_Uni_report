@@ -1,0 +1,3 @@
+[submodule "DemoApp/ShapeFromX/ShapeFromX/rapidjson"]
+	path = DemoApp/ShapeFromX/ShapeFromX/rapidjson
+	url = https://github.com/Tencent/rapidjson.git

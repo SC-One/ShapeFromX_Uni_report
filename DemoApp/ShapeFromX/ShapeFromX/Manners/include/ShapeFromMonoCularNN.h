@@ -6,6 +6,7 @@
 
 #include <QSurface3DSeries>
 #include <QSurfaceDataArray>
+#include <QThreadPool>
 #include <QWebSocket>
 
 using namespace QtDataVisualization;
@@ -17,7 +18,7 @@ public:
   explicit WebSocketClient(const QUrl &url, QObject *parent = nullptr);
 
 signals:
-  void depthMapReceived(const QList<QVariantList> &depthMap);
+  void depthMapReceived(const QList<QVector<int>> &depthMap);
 
 private slots:
   void onConnected();
@@ -28,6 +29,7 @@ private slots:
 
 private:
   QWebSocket webSocket;
+  QThreadPool _pool;
 };
 
 class ShapeFromMonoCularNN : public ShapeFromXBase {
@@ -35,9 +37,6 @@ class ShapeFromMonoCularNN : public ShapeFromXBase {
   Q_PROPERTY(QSurface3DSeries *mySurfaceSeries READ series WRITE setSeries
                  NOTIFY seriesChanged FINAL)
 
-  Q_PROPERTY(
-      QList<QVariantList> calculatedDepthMap READ calculatedDepthMap WRITE
-          setCalculatedDepthMap NOTIFY calculatedDepthMapChanged FINAL)
 public:
   explicit ShapeFromMonoCularNN(QObject *parent = nullptr);
 
@@ -46,17 +45,11 @@ public:
   Q_INVOKABLE QSurface3DSeries *series() const;
   Q_INVOKABLE void setSeries(QSurface3DSeries *newSeries);
 
-  QList<QVariantList> calculatedDepthMap() const;
-  void setCalculatedDepthMap(const QList<QVariantList> &newCalculatedDepthMap);
-
 signals:
-
   void seriesChanged();
 
-  void calculatedDepthMapChanged();
-
 private:
-  void onDepthMapreceived(const QList<QVariantList> &data);
+  void onDepthMapreceived(const QList<QVector<int>> &data);
 
   void clearData();
 

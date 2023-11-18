@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 async def receive_depth_map():
-    async with websockets.connect("ws://localhost:8765") as websocket:  # Change URL and port if needed
+    async with websockets.connect("ws://localhost:50777") as websocket:  # Change URL and port if needed
         fig, ax = plt.subplots()  # Create Matplotlib figure and axis
         imgplot = ax.imshow(np.zeros((480, 640, 3), dtype=np.uint8))  # Initialize with blank image
 

@@ -1,4 +1,5 @@
 #include <Manners/include/ShapeFromMonoCularNN.h>
+#include <QDateTime>
 #include <QElapsedTimer>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -9,19 +10,23 @@
 #include <QTimer>
 #include <QUrl>
 #include <QtConcurrent>
+#include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
 
 class TimeMeasurer {
 public:
-  explicit TimeMeasurer(QString const &name) : _name(name) { timer.start(); }
+  explicit TimeMeasurer(QString const &name) : _name(name) {
+    started = QDateTime::currentMSecsSinceEpoch();
+  }
 
   ~TimeMeasurer() {
-    qint64 elapsedTime = timer.elapsed();
+    qint64 elapsedTime = QDateTime::currentMSecsSinceEpoch() - started;
     qDebug() << _name << "Time elapsed: " << elapsedTime << "milliseconds";
   }
 
 private:
   QString _name;
-  QElapsedTimer timer;
+  qint64 started;
 };
 
 using namespace QtDataVisualization;
@@ -33,12 +38,10 @@ ShapeFromMonoCularNN::ShapeFromMonoCularNN(QObject *parent)
       _myData(nullptr), _lastRows(-1), _lastCols(-1) {
 
   qRegisterMetaType<QSurface3DSeries *>();
-  qRegisterMetaType<QVector<QVector<double>>>("QVector<QVector<double> >");
+  qRegisterMetaType<QList<QVector<int>>>("QVector<QVector<int> >");
 
   connect(&_client, &WebSocketClient::depthMapReceived, this,
           &ShapeFromMonoCularNN::onDepthMapreceived);
-  connect(this, &ShapeFromMonoCularNN::calculatedDepthMapChanged, this,
-          &ShapeFromMonoCularNN::outputCalculated, Qt::DirectConnection);
 }
 
 void ShapeFromMonoCularNN::calculateOutput() {
@@ -46,7 +49,7 @@ void ShapeFromMonoCularNN::calculateOutput() {
 }
 
 static QList<QVariantList>
-convertToQVariantList(const QVector<QVector<double>> &depthMap) {
+convertToQVariantList(const QList<QVector<int>> &depthMap) {
   QList<QVariantList> resultList;
 
   for (const auto &row : depthMap) {
@@ -60,15 +63,11 @@ convertToQVariantList(const QVector<QVector<double>> &depthMap) {
   return resultList;
 }
 
-void ShapeFromMonoCularNN::onDepthMapreceived(QList<QVariantList> const &data) {
+void ShapeFromMonoCularNN::onDepthMapreceived(QList<QVector<int>> const &data) {
   //  qDebug() << "Data:" << data;
-  {
-    TimeMeasurer measure("onDepthMapreceived");
-    setCalculatedDepthMap(data);
-    return;
-  }
+  //  TimeMeasurer measure("onDepthMapreceived");
 
-  if (_series && data.size()) {
+  if (_series && !data.isEmpty()) {
 
     int newRowCount = data.size();
     int newColumnCount = 0;
@@ -86,8 +85,12 @@ void ShapeFromMonoCularNN::onDepthMapreceived(QList<QVariantList> const &data) {
     }
 
     for (int i = 0; i < newRowCount; ++i) {
+      QSurfaceDataRow &row = *(*_myData)[i];
       for (int j = 0; j < newColumnCount; ++j) {
-        _myData->at(i)->at(j).position().setZ(i * j * 200);
+        qreal zPosition = data[i][j];
+        row[j].setPosition({static_cast<float>(j),
+                            static_cast<float>(zPosition),
+                            static_cast<float>(i)});
       }
     }
 
@@ -110,16 +113,6 @@ void ShapeFromMonoCularNN::clearData() {
   _lastCols = 0;
 }
 
-QList<QVariantList> ShapeFromMonoCularNN::calculatedDepthMap() const {
-  return _calculatedDepthMap;
-}
-
-void ShapeFromMonoCularNN::setCalculatedDepthMap(
-    const QList<QVariantList> &newCalculatedDepthMap) {
-  _calculatedDepthMap = newCalculatedDepthMap;
-  emit calculatedDepthMapChanged();
-}
-
 QtDataVisualization::QSurface3DSeries *ShapeFromMonoCularNN::series() const {
   return _series;
 }
@@ -134,6 +127,7 @@ void ShapeFromMonoCularNN::setSeries(
 
 WebSocketClient::WebSocketClient(const QUrl &url, QObject *parent)
     : QObject(parent) {
+  _pool.setMaxThreadCount(30);
   connect(&webSocket, &QWebSocket::connected, this,
           &WebSocketClient::onConnected);
   connect(&webSocket, &QWebSocket::disconnected, this,
@@ -160,32 +154,40 @@ void WebSocketClient::onConnected() {
 }
 
 void WebSocketClient::onTextMessageReceived(const QString &message) {
-  QtConcurrent::run([this, message]() {
-    TimeMeasurer measure("onTextMessageReceived");
-    // simple inline parser
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(message.toUtf8());
-    if (!jsonDoc.isArray())
-      return;
 
-    QJsonArray jsonArray = jsonDoc.array();
-    QVector<QVector<double>> depthMap;
+  //  TimeMeasurer measure("onTextMessageReceived");
 
-    for (const QJsonValue &row : jsonArray) {
-      if (!row.isArray())
-        continue;
+  // Convert QString to std::string
+  std::string utf8 = message.toStdString();
 
-      QJsonArray rowArray = row.toArray();
-      QVector<double> rowData;
+  // Parse JSON using RapidJSON
+  rapidjson::Document document;
+  document.Parse(utf8.c_str());
 
-      for (const QJsonValue &value : rowArray) {
-        rowData.append(value.toDouble());
+  if (!document.HasParseError() && document.IsArray()) {
+    const rapidjson::Value &depthMapArray = document;
+
+    // Process the depth map more efficiently without deeply nested loops
+    QList<QVector<int>> depthData;
+    for (rapidjson::SizeType i = 0; i < depthMapArray.Size(); ++i) {
+      const rapidjson::Value &rowValue = depthMapArray[i];
+      if (rowValue.IsArray()) {
+        const rapidjson::Value &rowArray = rowValue;
+
+        QVector<int> depthRow;
+        for (rapidjson::SizeType j = 0; j < rowArray.Size(); ++j) {
+          if (rowArray[j].IsInt()) {
+            depthRow.append(rowArray[j].GetInt());
+          }
+        }
+        depthData.append(depthRow);
       }
-
-      depthMap.append(rowData);
     }
 
-    emit depthMapReceived(convertToQVariantList(depthMap));
-  });
+    if (!depthData.isEmpty()) {
+      emit depthMapReceived(depthData);
+    }
+  }
 }
 
 void WebSocketClient::closed() {

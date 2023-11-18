@@ -108,4 +108,9 @@ target_link_libraries(Mono_CalibrationCV PUBLIC
   ${OpenCV_LIBS}
 )
 target_link_libraries(ShapeFromX PUBLIC ${OpenCV_LIBS})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Manners/include)
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Manners/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include
+
+)

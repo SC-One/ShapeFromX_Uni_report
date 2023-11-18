@@ -12,21 +12,7 @@ MannerBase {
     Manners.ShapeFromMonoCularNN {
         id: myAlgo
 
-        //        mySurfaceSeries: mySeri
-        onOutputCalculated: {
-            var arr = myAlgo.calculatedDepthMap
-            //todo: fill model by new 2d map data
-            dataModel.clear()
-            for (var i = 0; i < arr.length; ++i) {
-                for (var j = 0; j < arr[i].length; ++j) {
-                    dataModel.append({
-                                         "y": i,
-                                         "x": j,
-                                         "depth": arr[i][j] * 255
-                                     })
-                }
-            }
-        }
+        mySurfaceSeries: mySeri
     }
 
     Item {
@@ -84,25 +70,25 @@ MannerBase {
             axisY.segmentCount: 5
             axisY.subSegmentCount: 2
             axisY.labelFormat: "%i"
-            axisY.title: "Monocular NN"
-            axisX.title: "Depth - X"
-            axisZ.title: "Depth - Y"
+            axisY.title: "Depth"
+            axisX.title: "X"
+            axisZ.title: "Y"
 
             Surface3DSeries {
                 id: mySeri
-                meshSmooth: true
+                //                meshSmooth: true
+                visible: true
                 flatShadingEnabled: flatBtn.checked
                 drawMode: gridBtn.checked ? Surface3DSeries.DrawSurfaceAndWireframe : Surface3DSeries.DrawSurface
-                ItemModelSurfaceDataProxy {
-                    id: dataModelProxy
-                    itemModel: dataModel
-                    rowRole: "y"
-                    columnRole: "x"
-                    yPosRole: "depth"
-                }
+                //                ItemModelSurfaceDataProxy {
+                //                    id: dataModelProxy
+                //                    itemModel: dataModel
+                //                    rowRole: "y"
+                //                    columnRole: "x"
+                //                    yPosRole: "depth"
+                //                }
                 Component.onCompleted: {
-
-                    //                    myAlgo.setSeries(mySeri)
+                    myAlgo.setSeries(mySeri)
                 }
             }
         }
