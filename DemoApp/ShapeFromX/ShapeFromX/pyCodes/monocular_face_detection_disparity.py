@@ -22,7 +22,7 @@ async def consumer(websocket, path):
         depth_map = depth_map[0,:,:]
         depth_map = cv2.resize(depth_map, (width, height))
         # print("size:",(960, int(960/width*height)))
-        depth_map = cv2.resize(depth_map, (256, int(480/width*height)), interpolation=cv2.INTER_AREA)
+        depth_map = cv2.resize(depth_map, (460, int(460/width*height)), interpolation=cv2.INTER_AREA)
         depth_map = cv2.normalize(depth_map, None, 0, 255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 
         # Prepare depth_map as a 2D array (vector of vectors)
@@ -32,7 +32,7 @@ async def consumer(websocket, path):
         await websocket.send(json.dumps(depth_map_2d))
 
         # Simulate frame rate for demonstration purposes
-        await asyncio.sleep(0.2)  # Adjust the sleep time based on your actual frame rate # max: 4 fps
+        await asyncio.sleep(0.077)  # Adjust the sleep time based on your actual frame rate # max: 4 fps
 
 
     cap.release()

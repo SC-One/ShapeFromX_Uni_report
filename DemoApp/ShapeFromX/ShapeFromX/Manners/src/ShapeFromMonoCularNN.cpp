@@ -82,15 +82,21 @@ void ShapeFromMonoCularNN::onDepthMapreceived(QList<QVector<int>> const &data) {
       _myData->reserve(newRowCount);
       for (int i = 0; i < newRowCount; ++i)
         _myData->append(new QSurfaceDataRow(newColumnCount));
+
+      for (int i = 0; i < newRowCount; ++i) {
+        QSurfaceDataRow &row = *(*_myData)[i];
+        for (int j = 0; j < newColumnCount; ++j) {
+          row[j].setPosition({static_cast<float>(j), static_cast<float>(0),
+                              static_cast<float>(i)});
+        }
+      }
     }
 
     for (int i = 0; i < newRowCount; ++i) {
       QSurfaceDataRow &row = *(*_myData)[i];
       for (int j = 0; j < newColumnCount; ++j) {
         qreal zPosition = data[i][j];
-        row[j].setPosition({static_cast<float>(j),
-                            static_cast<float>(zPosition),
-                            static_cast<float>(i)});
+        row[j].setY(zPosition);
       }
     }
 
