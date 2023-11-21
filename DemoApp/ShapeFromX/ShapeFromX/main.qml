@@ -13,8 +13,9 @@ Window {
         Component.onCompleted: {
             addNewUI("Camera Calibration",
                      "qrc:/Manners/CalibrationQomponent.qml")
-            addNewUI("Shape from Shading", "qrc:/Manners/ShapeFromShading.qml")
-            addNewUI("Monocular NN", "qrc:/Manners/ShapeFromMCNN.qml")
+            addNewUI("Edges from Shading", "qrc:/Manners/ShapeFromShading.qml")
+            addNewUI("Monocular NN(small_model)",
+                     "qrc:/Manners/ShapeFromMCNN.qml")
         }
     }
 }
