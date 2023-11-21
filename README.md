@@ -3,6 +3,10 @@ Shape from X
 
 > **"Existing techniques for extracting 3D information from 2D images are good, but not good enough,"**	Tianfu Wu
 
+## Demo app
+if you want to check the demo app, see the [ReadMe file](./DemoApp/ShapeFromX/ShapeFromX#readme)
+ 
+
 https://github.com/SC-One/ShapeFromX_Uni_report/assets/60355798/01f787c5-523b-4b10-b578-9df95eaac424
 
 https://github.com/SC-One/ShapeFromX_Uni_report/assets/60355798/36fc3d08-bcfd-498c-93c7-5c3bc244c779
